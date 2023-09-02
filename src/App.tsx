@@ -1,32 +1,16 @@
-import React from 'react';
-// import logo from './logo.svg';
 import './App.css';
-import edubuk from './edubuk.svg';
+import { Footer } from './Footer';
+import { Header } from './Header';
+import { Hero } from './Hero';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={edubuk} className="App-logo" alt="logo" />
-        <a
-          className="App-button"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header />
 
-      <div className="body container">
-        <div className="box">
-          Edubuk eSeal dApp
-        </div>
-      </div>
+      <Hero />
 
-      <footer className="footer container-purple">
-        <h2>This is Footer</h2>
-      </footer>
+      <Footer />
     </div>
   );
 }
