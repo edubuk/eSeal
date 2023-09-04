@@ -1,0 +1,45 @@
+import { createContext } from "react";
+import { AccountTransactionType, CcdAmount } from "@concordium/web-sdk";
+import { WalletConnection, moduleSchemaFromBase64 } from "@concordium/react-components";
+import { E_SEALING_RAW_SCHEMA, E_SEALING_CONTRACT_NAME } from "./constants";
+
+/**
+ * Action for registering a new file has in the edubukeseal_testnet smart contract instance
+ */
+
+export async function register(
+      connection: WalletConnection,
+      account: string,
+      fileHashHex: string,
+      index: bigint,
+      subindex: 0n,
+    ) {
+      return connection.signAndSendTransaction(
+        account,
+        AccountTransactionType.Update
+        {
+          amount: new CcdAmount(BigInt(0n)),
+          address: {
+            index,
+            subindex,
+          },
+          receiveName: `${E_SEALING_CONTRACT_NAME}.registerFile`,
+          maxContractExecutionEnergy: 30000n,
+        },
+        {
+          parameters: fileHashHex,
+          schema: moduleSchemaFromBase64(E_SEALING_RAW_SCHEMA),
+        }
+      );
+    }
+
+/**
+ * Global Application state
+ */
+
+export type State = {
+  isConnected: boolean,
+  account: string | undefined,
+};
+
+export const state = createContext<State>({isConnected: false, account: undefined});
