@@ -10,11 +10,11 @@ function connectorTypeStyle(baseStyle: any, isSelected: boolean, isConnected: bo
   const style = { ...baseStyle, width: '50%' };
 
   if (isConnected) {
-    style.backgroundColor = '#c2259a';
-    style.border = '1px solid #69024f';
+    style.backgroundColor = '#7303fc';
+    // style.border = '1px solid #';
   } else if (isSelected) {
-    style.backgroundColor = '#69024f';
-    style.border = '#38012a';
+    style.backgroundColor = '#7303fc';
+    // style.border = '#5c02c9';
   }
 
   return style;

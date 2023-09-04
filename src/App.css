@@ -188,7 +188,7 @@ ul {
 /* BUTTONS -------------------------------------- */
 a.button,
 button {
-  background: var(--qwik-dark-text);
+  background: #7303fc;
   border: none;
   border-radius: 8px;
   color: #ffffff;
@@ -294,9 +294,9 @@ button.button-small {
 .logo {
   display: inline-block;
 }
-.logo a {
-  display: block;
-}
+/* .logo a { */
+/*   display: block; */
+/* } */
 
 .header ul {
   margin: 0;
@@ -418,3 +418,9 @@ button.button-small {
   font-size: 24px;
 }
 
+.containerSpaceBetween {
+    display: flex;
+    column-gap: 20px;
+    align-items: center;
+    justify-content: space-between;
+}

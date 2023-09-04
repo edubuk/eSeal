@@ -1,5 +1,5 @@
+import { TESTNET, WithWalletConnector } from '@concordium/react-components';
 import './App.css';
-import React from 'react';
 import { Sealer } from './Sealer';
 
 export function Hero() {
@@ -11,18 +11,18 @@ export function Hero() {
 
   return (
     <>
-    <div className="container hero" style={{paddingTop: "5vh"}}>
-      <span style={hero_span_style}>
-        <h1>Edubuk<br />eSeal dApp</h1>
-        <p style={{fontSize: "24px", paddingTop: "3vh", textAlign: "center"}}><span className="highlight">Powered by Concordium</span></p>
-        <div className="button-group" style={{justifyContent: "center", paddingTop: "3vh"}}>
-          <a href="#sealer"><button type="button">eSeal Your Certificates</button></a>
-        </div>
-      </span>
-    </div>
-      <div>
-        <Sealer />
+      <div className="container hero" style={{paddingTop: "5vh"}}>
+        <span style={hero_span_style}>
+          <h1>Edubuk<br />eSeal dApp</h1>
+          <p style={{fontSize: "24px", paddingTop: "3vh", textAlign: "center"}}><span className="highlight">Powered by Concordium</span></p>
+          <div className="button-group" style={{justifyContent: "center", paddingTop: "3vh"}}>
+            <a href="#sealer" className="button">eSeal Your Certificates</a>
+          </div>
+        </span>
       </div>
+      <main className="Sealer">
+        <WithWalletConnector network={TESTNET}>{(props) => <Sealer {...props} />}</WithWalletConnector>
+      </main>
     </>
   )
 }

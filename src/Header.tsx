@@ -14,10 +14,9 @@ export function Header() {
             href="https://edubuk.io"
             target="_blank"
             rel="noopener noreferrer"
+          className='button'
           >
-            <button>
               Explore CETA Certification
-            </button>
           </a>
         </div>
       </header>
