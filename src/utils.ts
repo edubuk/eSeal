@@ -16,7 +16,7 @@ export async function register(
     ) {
       return connection.signAndSendTransaction(
         account,
-        AccountTransactionType.Update
+        AccountTransactionType.Update,
         {
           amount: new CcdAmount(BigInt(0n)),
           address: {
