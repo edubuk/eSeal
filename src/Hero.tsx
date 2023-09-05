@@ -16,7 +16,7 @@ export function Hero() {
           <h1>Edubuk<br />eSeal dApp</h1>
           <p style={{fontSize: "24px", paddingTop: "3vh", textAlign: "center"}}><span className="highlight">Powered by Concordium</span></p>
           <div className="button-group" style={{justifyContent: "center", paddingTop: "3vh"}}>
-            <a href="#sealer" className="button">eSeal Your Certificates</a>
+            <a href="#sealer"><button className="button" style={{backgroundColor: "#7303fc", padding: "1em"}}>eSeal Your Certificates</button></a>
           </div>
         </span>
       </div>

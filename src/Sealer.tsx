@@ -21,23 +21,10 @@ import {
 } from './constants'
 import { WalletConnectionTypeButton } from './WalletConnectorTypeButton';
 
-// const SealerCardStyle = {
-//   backgroundColor: 'white',
-//   color: '#7303fc',
-//   width: '500px',
-//   borderRadius: "8px",
-//   margin: "10px 0px 10px 0px",
-//   padding: "10px 18px",
-//   border: "3px solid #ff80dfff",
-// };
-
 const ButtonStyle = {
   color: "white",
   borderRadius: "8px",
-  // margin: "7px 0px 7px 0px",
-  // paddingTop: "2vh",
   width: "100%",
-  // border: "3px solid "
   backgroundColor: "#7303fc",
   cursor: "pointer",
   fontWeight: "600",
@@ -47,10 +34,7 @@ const ButtonStyle = {
 const ButtonStyleDisabled = {
   color: "white",
   borderRadius: "8px",
-  // margin: "7px 0px 7px 0px",
-  // padding: "10px",
   width: "100%",
-  // border: 
   backgroundColor: "#7303fc",
   cursor: "pointer",
   fontWeight: "600",
@@ -60,10 +44,7 @@ const ButtonStyleDisabled = {
 const ButtonStyleSelected = {
   color: "white",
   borderRadius: "8px",
-  // margin: "7px 0px 7px 0px",
-  // padding: "10px",
   width: "100%",
-  // border: 
   backgroundColor: "#7303fc",
   cursor: "pointer",
   fontWeight: "600",
@@ -73,10 +54,7 @@ const ButtonStyleSelected = {
 const ButtonStyleNotSelected = {
   color: "white",
   borderRadius: "8px",
-  // margin: "7px 0px 7px 0px",
-  // padding: "10px",
   width: "100%",
-  // border: 
   backgroundColor: "#7303fc",
   cursor: "pointer",
   fontWeight: "600",
@@ -88,10 +66,8 @@ const InputFieldStyle = {
   color: "white",
   borderRadius: "8px",
   width: "100%",
-  // border: "1px solid #308274",
   margin: "7px 0px 7px 0px",
   padding: "0.4em",
-  // display: "inline-flex",
   fontWeight: "600",
   fontSize: "1em",
 };
