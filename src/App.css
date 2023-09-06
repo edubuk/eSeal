@@ -152,7 +152,7 @@ ul {
 /* CONTAINER ------------------------------------ */
 .container {
   margin: 0 auto;
-  padding: 10px 20px;
+  padding: 0.5em;
 }
 .container.container-purple {
   background: var(--qwik-light-purple);
@@ -168,12 +168,12 @@ ul {
 /*   /* does nothing on mobile */ */
 /* } */
 .container.container-spacing-xl {
-  padding: 20px 40px;
+  padding: 1em;
 }
 
 @media screen and (min-width: 768px) {
   .container {
-    padding: 20px 40px;
+    padding: 1em;
   }
   .container.container-spacing-xl {
     padding: 100px 60px;

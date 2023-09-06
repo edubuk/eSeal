@@ -1,5 +1,5 @@
 import './App.css';
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import Switch from 'react-switch';
 import {
   toBuffer,
@@ -24,7 +24,7 @@ import { WalletConnectionTypeButton } from './WalletConnectorTypeButton';
 const ButtonStyle = {
   color: "white",
   borderRadius: "8px",
-  width: "100%",
+  // width: "100%",
   backgroundColor: "#7303fc",
   cursor: "pointer",
   fontWeight: "600",
@@ -34,7 +34,7 @@ const ButtonStyle = {
 const ButtonStyleDisabled = {
   color: "white",
   borderRadius: "8px",
-  width: "100%",
+  // width: "100%",
   backgroundColor: "#7303fc",
   cursor: "pointer",
   fontWeight: "600",
@@ -44,7 +44,7 @@ const ButtonStyleDisabled = {
 const ButtonStyleSelected = {
   color: "white",
   borderRadius: "8px",
-  width: "100%",
+  // width: "100%",
   backgroundColor: "#7303fc",
   cursor: "pointer",
   fontWeight: "600",
@@ -54,7 +54,7 @@ const ButtonStyleSelected = {
 const ButtonStyleNotSelected = {
   color: "white",
   borderRadius: "8px",
-  width: "100%",
+  // width: "100%",
   backgroundColor: "#7303fc",
   cursor: "pointer",
   fontWeight: "600",
@@ -65,7 +65,7 @@ const InputFieldStyle = {
   backgroundColor: "#7303fc",
   color: "white",
   borderRadius: "8px",
-  width: "100%",
+  // width: "100%",
   margin: "7px 0px 7px 0px",
   padding: "0.4em",
   fontWeight: "600",
@@ -166,10 +166,10 @@ export function Sealer(props: WalletConnectionProps) {
   const [isWaitingForTransaction, setWaitingForUser] = useState(false);
 
   return (
-    <div className="container hero" id="sealer" style={{paddingTop: "25vh", paddingBottom: "25vh"}}>
-      <div style={{border: "3px solid #ff80dfff", borderRadius: "8px"}}>
+    <div className="container hero" id="sealer" style={{paddingTop: "25vh", paddingBottom: "25vh", maxWidth: "340px"}}>
+      <div style={{border: "3px solid #ff80dfff", borderRadius: "8px", maxWidth: "340px"}}>
         {/* <h1 className="header">Register a file on Concordium</h1> */}
-        <div className="container" style={{display: "flex", flexDirection: "row", columnGap: "10px", paddingTop: "2em"}}>
+        <div className="container" style={{display: "flex", flexDirection: "row", justifyContent: "space-between", columnGap: "20px"}}>
           <WalletConnectionTypeButton
             buttonStyle={ButtonStyle}
             disabledButtonStyle={ButtonStyleDisabled}
@@ -210,7 +210,7 @@ export function Sealer(props: WalletConnectionProps) {
             <>
               <div style={{fontSize: "1.4em", padding: "0em 1em 1em 0em"}}>Connected to:</div>
               <button
-                style={{background: "#7303fc"}}
+                style={{background: "#7303fc", wordWrap: "break-word"}}
                   className="link"
                   type="button"
                   onClick={() => {
@@ -235,7 +235,7 @@ export function Sealer(props: WalletConnectionProps) {
                           setHash('');
                       }}
                   >
-                      Registration Tab
+                      Register
                   </button>
                   <Switch
                       onChange={() => {
@@ -264,7 +264,7 @@ export function Sealer(props: WalletConnectionProps) {
                           setHash('');
                       }}
                   >
-                      Display Tab
+                      Display
                   </button>
               </div>
             </>
@@ -315,16 +315,18 @@ export function Sealer(props: WalletConnectionProps) {
               Compute File Hash
             </button>
             </div>
-            <p style={{ marginBottom: 0, color: "#7303fc", paddingTop: "2vh" }}>File hash of selected file:</p>
+            <p style={{ marginBottom: 0, color: "#7303fc", paddingTop: "2vh", paddingBottom: "1vh" }}>File hash of selected file:</p>
             {loadingError && <div style={{ color: 'red' }}>Error: {loadingError}.</div>}
             {isLoading && <div className="loadingText">Loading...</div>}
-            {fileHashHex !== '' && <div className="loadingText">0x{fileHashHex}</div>}
+            {fileHashHex !== '' && <div className="loadingText" style={{wordWrap: "break-word", background: "#7303fc", color: "white", padding: "0.4em", borderRadius: "8px", lineHeight: "1.3em"}}>0x{fileHashHex}</div>}
           </div>
         )}
         {!connection && (
-            <button className="container" style={ButtonStyleDisabled} type="button" disabled>
+          <div className='container'>
+            <button style={ButtonStyleDisabled} type="button" disabled>
                 Waiting for connection...
             </button>
+          </div>
         )}
         {connection && isRegisterFilePage && account && (
           <div className="container">
@@ -392,8 +394,8 @@ export function Sealer(props: WalletConnectionProps) {
                 {!isRegisterFilePage && witness !== '' && (
                     <div style={{color: "#7303fc"}} className="container">
                         <div>On-chain Record:</div>
-                        <div className="loadingText">{witness === null ? 'Not registered' : witness} (witness)</div>
-                        <div className="loadingText">
+                        <div className="loadingText" style={{wordWrap: "break-word", padding: "0.4em", borderRadius: "8px", background: "#7303fc", color: "white"}}>{witness === null ? 'Not registered' : witness} (witness)</div>
+                        <div className="loadingText" style={{paddingTop: "0.4em", wordWrap: "break-word"}}>
                             {timestamp === null ? 'Not registered' : timestamp} (timestamp)
                         </div>
                     </div>
