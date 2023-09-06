@@ -373,7 +373,7 @@ export function Sealer(props: WalletConnectionProps) {
                         {hash && (
                             <>
                                 <button
-                                  style={{background: "#7303fc"}}
+                                  style={{background: "#7303fc", wordWrap: "break-word"}}
                                     className="link"
                                     type="button"
                                     onClick={() => {
