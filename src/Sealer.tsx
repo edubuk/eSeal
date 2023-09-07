@@ -365,7 +365,7 @@ export function Sealer(props: WalletConnectionProps) {
             <p>
                 {isRegisterFilePage && (
                     <div className="container">
-                        <div style={{color: "#7303fc"}}>Transaction status{hash === '' ? '' : ''}</div>
+                        <div style={{color: "#7303fc", paddingBottom: "0.4em"}}>Transaction status{hash === '' ? '' : ''}</div>
                         {!hash && transactionError && (
                             <div style={{ color: 'red' }}>Error: {transactionError}.</div>
                         )}
@@ -393,7 +393,7 @@ export function Sealer(props: WalletConnectionProps) {
                 {getFileError && <div style={{ color: 'red' }}>Error: {getFileError}.</div>}
                 {!isRegisterFilePage && witness !== '' && (
                     <div style={{color: "#7303fc"}} className="container">
-                        <div>On-chain Record:</div>
+                        <div style={{paddingBottom: "0.4em"}}>On-chain Record:</div>
                         <div className="loadingText" style={{wordWrap: "break-word", padding: "0.4em", borderRadius: "8px", background: "#7303fc", color: "white"}}>{witness === null ? 'Not registered' : witness} (witness)</div>
                         <div className="loadingText" style={{paddingTop: "0.4em", wordWrap: "break-word"}}>
                             {timestamp === null ? 'Not registered' : timestamp} (timestamp)
