@@ -177,7 +177,7 @@ button {
   cursor: pointer;
   font-size: 1rem;
   font-weight: 600;
-  padding: 15px 20px;
+  padding: 5px 10px;
   text-align: center;
 }
 
@@ -356,7 +356,7 @@ button.button-small {
   }
 
   .hero p {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
   }
 }
 
@@ -400,4 +400,23 @@ button.button-small {
     column-gap: 20px;
     align-items: center;
     justify-content: space-between;
+}
+
+.container .textinputfield[type=text] {
+  background-color: white;
+  color: #7303fc;
+  border-radius: 8px;
+  margin: 7px 0px 7px 0px;
+  padding: 0.4em;
+  font-weight: 600;
+  font-size: 1em;
+  border: 2px solid #ff80df;
+}
+
+.container .textinputfield[type=text]:focus {
+  outline: none;
+}
+
+.container .textinputfield[type=text]:focus-within {
+  border: 2px solid #7303fc;
 }

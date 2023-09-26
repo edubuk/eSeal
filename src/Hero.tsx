@@ -1,6 +1,7 @@
 import { TESTNET, WithWalletConnector } from '@concordium/react-components';
 import './App.css';
 import { Sealer } from './Sealer';
+import { Verifier } from './Verifier';
 
 export function Hero() {
   const hero_span_style = {
@@ -64,18 +65,24 @@ export function Hero() {
 
   return (
     <>
-      <div className="container hero" style={{paddingTop: "5vh"}}>
+      <div className="container hero" style={{paddingTop: "5vh", paddingBottom: "5vh"}}>
         <span style={hero_span_style}>
           <h1>Edubuk<br />eSeal dApp</h1>
           <p style={{fontSize: "24px", paddingTop: "3vh", textAlign: "center"}}><span className="highlight">Powered by Concordium</span></p>
           <div className="button-group" style={{justifyContent: "center", paddingTop: "3vh"}}>
             <a href="#sealer"><button className="button" style={{backgroundColor: "#7303fc", padding: "1em"}} onClick={(e: any) => Confetti()}>eSeal Your Certificates</button></a>
           </div>
+          <div className="button-group" style={{justifyContent: "center", paddingTop: "3vh"}}>
+            <a href="#verifier"><button className="button" style={{backgroundColor: "#7303fc", padding: "1em"}} onClick={(e: any) => Confetti()}>Verify Your Certificates</button></a>
+          </div>
         </span>
       </div>
-      <main className="Sealer">
+      <div className="Sealer" style={{marginTop: "25px", marginBottom: "25px", display: "block"}}>
         <WithWalletConnector network={TESTNET}>{(props) => <Sealer {...props} />}</WithWalletConnector>
-      </main>
+      </div>
+      <div className="Verifier" style={{paddingTop: "25px", marginBottom: "25px", display: "block"}}>
+        <WithWalletConnector network={TESTNET}>{(props) => <Verifier {...props} />}</WithWalletConnector>
+      </div>
     </>
   )
 }

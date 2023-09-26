@@ -1,5 +1,5 @@
 import './App.css';
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import {
   toBuffer,
   deserializeReceiveReturnValue,
@@ -8,7 +8,6 @@ import {
 } from '@concordium/web-sdk';
 import sha256 from 'sha256';
 import { useGrpcClient, TESTNET, WalletConnectionProps, useConnection, useConnect } from '@concordium/react-components';
-import { register } from './utils';
 import {
   E_SEALING_CONTRACT_NAME,
   E_SEALING_CONTRACT_INDEX,
@@ -18,6 +17,13 @@ import {
   WALLET_CONNECT,
 } from './constants'
 import { WalletConnectionTypeButton } from './WalletConnectorTypeButton';
+
+const ResultStyle = {
+  background: "#7303fc",
+  color: "white",
+  padding: "0.1em 0.2em",
+  borderRadius: "8px",
+}
 
 const ButtonStyle = {
   color: "white",
@@ -49,10 +55,21 @@ const InputFieldStyle = {
   backgroundColor: "#7303fc",
   color: "white",
   borderRadius: "8px",
+  // width: "100%",
   margin: "7px 0px 7px 0px",
   padding: "0.4em",
   fontWeight: "600",
   fontSize: "1em",
+};
+
+export const Eseal =  {
+  filehash: String,
+  issued_to: String,
+  issued_by: String,
+  cert_type: String,
+  tx_hash: String,
+  timestamp: String,
+  signer: String
 };
 
 const Disabled = {
@@ -61,11 +78,9 @@ const Disabled = {
 
 const Enabled = {};
 
-async function postEseal(filehash: string, issuedTo: string, issuedBy: string, cerType: string, hash: string, timestamp: string, signer: string) {
-  await fetch("http://localhost:3000/eseal", {
-    method: 'POST',
-    body: JSON.stringify([filehash, issuedTo, issuedBy, cerType, hash, timestamp, signer])
-  }).then((res) => console.log(res));
+async function getEseal(filehash: string) {
+  const result = await fetch(`http://localhost:3000/eseal?filehash=${filehash}`); 
+  return result;
 }
 
 async function viewFile(rpcClient: ConcordiumGRPCClient, fileHashHex: string) {
@@ -102,7 +117,7 @@ async function viewFile(rpcClient: ConcordiumGRPCClient, fileHashHex: string) {
     return { timestamp: null, witness: null };
 }
 
-export function Sealer(props: WalletConnectionProps) {
+export function Verifier(props: WalletConnectionProps) {
   const { network, activeConnectorType, activeConnector, activeConnectorError, connectedAccounts, genesisHashes } = props;
 
   const { connection, setConnection, account, genesisHash } = useConnection(connectedAccounts, genesisHashes);
@@ -117,18 +132,12 @@ export function Sealer(props: WalletConnectionProps) {
 
   const [fileHashHex, setFileHashHex] = useState('');
 
-  const [issuedTo, setIssuedTo] = useState('');
-
-  const [issuedBy, setIssuedBy] = useState('');
-
-  const [cerType, setCerType] = useState('');
-
   const [selectedFile, setSelectedFile] = useState<File>();
 
   const [witness, setWitness] = useState('');
 
   const [timestamp, setTimestamp] = useState('');
-  
+
   const changeHandler = (event: ChangeEvent) => {
     const test = event.target as HTMLInputElement;
 
@@ -138,22 +147,8 @@ export function Sealer(props: WalletConnectionProps) {
     }
   };
 
-  const issuedToChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const name = event.target.value;
-    setIssuedTo(name);
-  }
-
-  const issuedByChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const authority = event.target.value;
-    setIssuedBy(authority);
-  }
-
-  const cerTypeChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const cert_type = event.target.value;
-    setCerType(cert_type);
-  }
-
   useEffect(() => {
+    // View File Record
     if (grpcClient && fileHashHex !== '') {
       viewFile(grpcClient, fileHashHex)
         .then((record) => {
@@ -165,39 +160,45 @@ export function Sealer(props: WalletConnectionProps) {
           setGetFileError((e as Error).message);
           setTimestamp('');
           setWitness('');
-        });
+      });
+      getEseal(fileHashHex).then((res) => {
+        res.json().then((js_val) => {
+          setName(js_val.issued_to);
+          setAuthority(js_val.issued_by);
+          setCertType(js_val.cert_type);
+          setHash(js_val.tx_hash);
+          setVerifiedResult('verified');
+        }).catch((error) => {
+            console.log(`Error: ${error}`);
+            setVerifiedResult('unverified');
+          })
+      });
     }
+
+
   }, [grpcClient, fileHashHex]);
 
-  useEffect(() => {
-    if (fileHashHex !== '' && hash !== '' && witness !== '' && timestamp !== '' && issuedTo !== '' && issuedBy !== '' && cerType !== '') {
-      postEseal(fileHashHex, issuedTo, issuedBy, cerType, hash, timestamp, witness).catch((e) => console.log(e));
-    }
-  })
+  const [verifiedResult, setVerifiedResult] = useState('');
+    
+  const [name, setName] = useState('');
 
-  const [isRegisterFilePage, setIsRegisterFilePage] = useState(true);
+  const [authority, setAuthority] = useState('');
+
+  const [certType, setCertType] = useState('');
 
   const [hash, setHash] = useState('');
-  
-  const [transactionError, setTransactionError] = useState('');
 
   const [loadingError, setLoadingError] = useState('');
 
   const file = useRef<HTMLInputElement | null>(null);
 
-  const name = useRef<HTMLInputElement | null>(null);
-
-  const authority = useRef<HTMLInputElement | null>(null);
-
-  const cert_type = useRef<HTMLInputElement | null>(null);
-
   const [isWaitingForTransaction, setWaitingForUser] = useState(false);
 
   return (
-    <div className="container hero" id="sealer" style={{paddingTop: "25vh", paddingBottom: "25vh", maxWidth: "340px"}}>
+    <div className="container hero" id="verifier" style={{maxWidth: "340px", paddingTop: "25vh", paddingBottom: "25vh"}}>
       <div style={{border: "3px solid #ff80dfff", borderRadius: "8px", maxWidth: "340px"}}>
-        <div className="container"><button style={ButtonStyleSelected}>eSeal Your Certificate</button></div>
-        <div className="container" style={{display: "flex", flexDirection: "row", justifyContent: "space-between", columnGap: "20px"}}>
+        <div className="container"><button style={ButtonStyleSelected}>Verify Your Certificates</button></div>
+        <div className="container" style={{display: "flex", flexDirection: "row", justifyContent: "space-between", columnGap: "10px"}}>
           <WalletConnectionTypeButton
             buttonStyle={ButtonStyle}
             disabledButtonStyle={ButtonStyleDisabled}
@@ -262,58 +263,33 @@ export function Sealer(props: WalletConnectionProps) {
         </div>
         {account !== undefined && (
           <div className="container" style={{display: "flex", flexDirection: "column", paddingTop: "0em"}}>
-            <p style={{ marginBottom: 0, padding: "0em 0em 0em 0em", color: "#7303fc" }}>Certificate Issued To:</p>
-            <input 
-              className="textinputfield" 
-              type="text" 
-              onChange={issuedToChangeHandler}
-              ref={name}
-            />
-            <p style={{ marginBottom: 0, padding: "0.5em 0em 0em 0em", color: "#7303fc" }}>Certificate Issued By:</p>
-            <input
-              className="textinputfield" 
-              type="text" 
-              onChange={issuedByChangeHandler}
-              ref={authority}
-            />
-            <p style={{ marginBottom: 0, padding: "0.5em 0em 0em 0em", color: "#7303fc" }}>Certificate Type:</p>
-            <input 
-              className="textinputfield" 
-              type="text" 
-              onChange={cerTypeChangeHandler}
-              ref={cert_type}
-            />
-            <p style={{ marginBottom: 0, padding: "0.5em 0em 0.5em 0em", color: "#7303fc" }}>Select a file:</p>
-            <input
-                className="input"
-                style={InputFieldStyle}
-                type="file"
-                onChange={changeHandler}
-                ref={file}
-            />
+            {/* <label> */}
+                <p style={{ marginBottom: 0, padding: "0em 0em 0.5em 0em", color: "#7303fc" }}>Select a file:</p>
+                <input
+                    className="input"
+                    style={InputFieldStyle}
+                    type="file"
+                    onChange={changeHandler}
+                    ref={file}
+                />
+            {/* </label> */}
             <div style={{paddingTop: "0.5em"}}>
             <button
               style={ButtonStyle}
               type="button"
               onClick={async () => {
                 try {
-                  if (issuedTo === '') {
-                      alert('Please insert your name in "Certificate Issued To" field');
-                    } else if (issuedBy === '') {
-                      alert('Please insert the name of the Certifying Authority in "Certificate Issued By" field');
-                    } else if (cerType === '') {
-                      alert('Please insert the "Certificate Type"');
-                    } else if (selectedFile !== undefined) {
+                  if (selectedFile !== undefined) {
                     setFileHashHex('');
                     setLoading(true);
                     const arrayBuffer = await selectedFile.arrayBuffer();
                     const byteArray = new Uint8Array(arrayBuffer as ArrayBuffer);
                     const newFileHashHex = sha256(byteArray.toString());
                     setFileHashHex(newFileHashHex);
-                    setHash('');
                     setLoadingError('');
                     setLoading(false);
                   } else {
+                    // eslint-disable-next-line no-alert
                     alert('Choose a file to compute the file hash');
                   }
                 } catch (err) {
@@ -321,15 +297,15 @@ export function Sealer(props: WalletConnectionProps) {
                 }
             }}
             >
-              Compute File Hash
+              Verify Certificate
             </button>
             </div>
-            <div style={fileHashHex === '' ? Disabled : Enabled}>
-              <p style={{ marginBottom: 0, color: "#7303fc", paddingTop: "0.5em", paddingBottom: "0.25em" }}>File hash of selected certificate:</p>
+            <div style={authority === '' ? Disabled : Enabled}>
+              <p style={{ marginBottom: 0, color: "#7303fc", paddingTop: "2vh", paddingBottom: "1vh" }}>File hash of selected certificate:</p>
               {loadingError && <div style={{ color: 'red' }}>Error: {loadingError}.</div>}
               {isLoading && <div className="loadingText">Loading...</div>}
               {fileHashHex !== '' && <div className="loadingText" style={{wordWrap: "break-word", background: "#7303fc", color: "white", padding: "0.4em", borderRadius: "8px", lineHeight: "1.3em"}}>0x{fileHashHex}</div>}
-              </div>
+            </div>
           </div>
         )}
         {!connection && (
@@ -339,59 +315,28 @@ export function Sealer(props: WalletConnectionProps) {
             </button>
           </div>
         )}
-        {connection && isRegisterFilePage && account && (
-          <div className="container" style={fileHashHex === '' ? Disabled : Enabled}>
-            <button
-                style={fileHashHex === '' ? ButtonStyleDisabled : ButtonStyle}
-                type="button"
-                disabled={fileHashHex === ''}
-                onClick={() => {
-                if (issuedTo === undefined) {
-                  alert(`Please enter name of the Certificate Beneficiary`)
-                } else if (issuedBy === undefined) {
-                  alert(`Please specify the Certifying Authority`)
-                } else if (cerType === undefined) {
-                  alert(`Please mention Certificate Type (Graduation, Postgraduation, etc.)`)
-                } else if (fileHashHex === '') {
-                  alert(`Select a file and Compute file hash to register`)
-                } else {                   
-                  if (witness !== null) {
-                        alert(
-                            `This file hash is already registered \n${witness} (withness) \n${timestamp} (timestamp)`
-                        );
-                    } else {
-                        setHash('');
-                        setTransactionError('');
-                        setWaitingForUser(true);
-                        const tx = (isRegisterFilePage ? register : register)(
-                            connection,
-                            account,
-                            fileHashHex,
-                            E_SEALING_CONTRACT_INDEX,
-                            CONTRACT_SUB_INDEX
-                        );
-                        tx.then(setHash)
-                            .catch((err) => setTransactionError((err as Error).message))
-                            .finally(() => setWaitingForUser(false));
-                    }
-                }
-                }}
-            >
-                Register File Hash
-            </button>
-          </div>
-        )}
-        {connection && account && fileHashHex !== '' && (
-            <p>
-                {isRegisterFilePage && (
-                    <div className="container" style={{paddingTop: "0em"}}>
-                        <div style={{color: "#7303fc", paddingBottom: "0.4em"}}>Transaction status{hash === '' ? '' : ''}</div>
-                        {!hash && transactionError && (
-                            <div style={{ color: 'red' }}>Error: {transactionError}.</div>
-                        )}
-                        {!hash && !transactionError && <div className="loadingText">None</div>}
-                        {hash && (
-                            <>
+        {connection && account && verifiedResult !== 'unverified' && (
+            <p style={{lineHeight: "1.2"}}>
+                {getFileError && <div style={{ color: 'red' }}>Error: {getFileError}.</div>}
+                {!false && witness !== '' && (
+                    <div style={{color: "#7303fc", paddingTop: "0em"}} className="container">
+                        <div style={{paddingBottom: "0.4em", paddingTop: "0em"}}>On-chain Record:</div>
+                        <div className="loadingText" style={{wordWrap: "break-word", padding: "0.4em", borderRadius: "8px", background: "#7303fc", color: "white"}}>{witness === null ? 'Not registered' : witness} (witness)</div>
+                        <div className="loadingText" style={{paddingTop: "0.4em", lineHeight: "1.5"}}>
+                            Timestamp: <br /><span style={ResultStyle}>{timestamp === null ? 'Not registered' : timestamp}</span>
+                        </div>
+                        <div style={{marginTop: "0.4em"}}>
+                            Certificate Issued To: <span style={ResultStyle}>{name === null ? 'No Name' : name}</span>
+                        </div>
+                        <div style={{marginTop: "0.4em"}}>
+                            Issued By: <span style={ResultStyle}>{authority === null ? 'No Authority' : authority}</span>
+                        </div>
+                        <div style={{marginTop: "0.4em"}}>
+                            Certificate Type: <span style={ResultStyle}>{certType === null ? 'No Certificate Type' : certType}</span>
+                        </div>
+                        <div style={{marginTop: "0.4em"}}>
+                            {
+                              <> <span style={{lineHeight: "1.5"}}>Transaction Hash:</span><br />
                                 <button
                                   style={{background: "#7303fc", wordWrap: "break-word"}}
                                     className="link"
@@ -406,23 +351,23 @@ export function Sealer(props: WalletConnectionProps) {
                                 >
                                     {hash}
                                 </button>
-                            </>
-                        )}
-                    </div>
-                )}
-                {getFileError && <div style={{ color: 'red' }}>Error: {getFileError}.</div>}
-                {!isRegisterFilePage && witness !== '' && (
-                    <div style={{color: "#7303fc"}} className="container">
-                        <div style={{paddingBottom: "0.4em"}}>On-chain Record:</div>
-                        <div className="loadingText" style={{wordWrap: "break-word", padding: "0.4em", borderRadius: "8px", background: "#7303fc", color: "white"}}>{witness === null ? 'Not registered' : witness} (witness)</div>
-                        <div className="loadingText" style={{paddingTop: "0.4em", wordWrap: "break-word"}}>
-                            {timestamp === null ? 'Not registered' : timestamp} (timestamp)
+                              </>
+                            }
+                        </div>
+                        <div className="container" style={{marginTop: "0.4em", backgroundColor: "#8CFF9E", padding: "0.5em 0.5em", borderRadius: "8px", textAlign: "center"}}>
+                            {hash === null ? '❌ Verification Failed' : '✅ Verified Record'}
                         </div>
                     </div>
                 )}
             </p>
         )}
+        {verifiedResult === 'unverified' && (
+          <div className="container">
+          <button style={{background: "#FF7779", borderRadius: "8px", textAlign: "center"}}>Verification Failed ❌</button>
+          </div>
+        )}
         </div>
       </div>
   )
 }
+
