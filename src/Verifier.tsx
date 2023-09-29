@@ -79,7 +79,7 @@ const Disabled = {
 const Enabled = {};
 
 async function getEseal(filehash: string) {
-  const result = await fetch(`http://localhost:3000/eseal?filehash=${filehash}`); 
+  const result = await fetch(`http://localhost:4000/eseal?filehash=${filehash}`); 
   return result;
 }
 
