@@ -62,7 +62,7 @@ const Disabled = {
 const Enabled = {};
 
 async function postEseal(filehash: string, issuedTo: string, issuedBy: string, cerType: string, hash: string, timestamp: string, signer: string) {
-  await fetch("http://localhost:4000/eseal", {
+  await fetch("https://edubukeseal.xyz/eseal", {
     method: 'POST',
     body: JSON.stringify([filehash, issuedTo, issuedBy, cerType, hash, timestamp, signer])
   }).then((res) => console.log(res));
